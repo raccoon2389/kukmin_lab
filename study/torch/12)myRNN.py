@@ -121,4 +121,20 @@ def train():
             optim.step()
     return total_loss
 
-print(train())
+def train():
+    total_loss = 0
+    for epoch in range(100):
+        for i,data in enumerate(train_loader,0):
+            inputs , labels = data
+            # print(inputs)
+            inputs, labels = Variable(inputs), Variable(labels)
+            # print(inputs)
+            y_pred = model(inputs)
+            
+            loss = criterion(y_pred,labels)
+            total_loss += loss
+            print(f"epoch : {epoch+1} \nloss : {loss}\t{i*BATCH_SIZE} / {BATCH_SIZE}")
+            model.zero_grad()
+            loss.backward()
+            optim.step()
+    return total_loss
