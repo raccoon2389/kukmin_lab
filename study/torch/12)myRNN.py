@@ -62,6 +62,7 @@ class Set(dataset.Dataset):
         self.x_data = to_seq(f.iloc[:,0].to_numpy())
         self.y_data = f.iloc[:,1].to_numpy()
         self.y_data = torch.LongTensor([files.index(p) for p in self.y_data])
+        print(self.y_data.size())
         self.len = len(self.x_data)
 
     def __getitem__(self, index):
