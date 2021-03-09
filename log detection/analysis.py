@@ -1,5 +1,8 @@
 import pandas as pd
 import numpy as np
+from pandas.io.pytables import IndexCol
 
-log = pd.read_csv('log detection/dataset/EClog HTTP_level e_commerce data based on server access logs for an online store/eclog.csv',header=0,index_col=None)
-print(log.loc[:,'Uri'].unique().size)
+
+df = pd.read_csv('log detection/dataset/req2log2.csv',index_col=0)
+
+print(df.iloc[:,1].unique(),df.iloc[:,0].value_counts())

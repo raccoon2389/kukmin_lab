@@ -4,3 +4,4 @@ classifies/*
 study/data/*
 log detection/dataset/*
 MODEL*
+*.csv
