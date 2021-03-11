@@ -5,3 +5,5 @@ study/data/*
 log detection/dataset/*
 MODEL*
 *.csv
+kisti_http/data/*
+.*arff
