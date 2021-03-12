@@ -1,5 +1,5 @@
 import torch
-
+import io
 import pandas as pd
 from torch.utils.data import Dataset, DataLoader
 
@@ -9,18 +9,21 @@ class PNNDataset(Dataset):
         self.y = y
 
     def __getitem__(self, index):
-        x = torch.load(self.x[index])
+        x = torch.as_tensor(self.x)
         y = torch.tensor([self.y[index]], dtype=torch.float32)
+        print(type(x))
         return x, y
 
     def __len__(self):
         return len(self.x)
 
 def get_data_loader(csv_path, batch_size = 128, shuffle = True, test_mode = False):
-    df = pd.read_csv(csv_path, header=None)
-    file_path_list, labels = df[0].values, df[1].values
+    df = pd.read_csv(csv_path,header=0,index_col=0)
+    print(df.head())
+    file_path_list, labels = df['0'].values, df['1'].values
     dataset = PNNDataset(file_path_list, labels)
     dataloader = DataLoader(dataset, batch_size, shuffle = shuffle)
+
     if test_mode:
         return dataloader, file_path_list
     else:

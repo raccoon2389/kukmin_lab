@@ -25,10 +25,10 @@ path_con = path_con[sorted_idx]
 
 
 INPUT_SIZE = path_con.shape[1]
-BATCH_SIZE = 64
+BATCH_SIZE = 32
 OUTPUT_SIZE = 1
 HIDDEN_SIZE = 64
-N_LAYER = 2 
+N_LAYER = 1
 
 class Dataset_(dataset.Dataset):
     def __init__(self) -> None:
@@ -37,7 +37,7 @@ class Dataset_(dataset.Dataset):
         train_y = np.zeros((train_x.shape[0]))
         anomal_y = np.zeros((anomal_x.shape[0])) + 1
         self.train_label = np.concatenate([train_y,anomal_y]).reshape(-1,1)
-        self.train_label = torch.LongTensor(self.train_label)
+        self.train_label = torch.Tensor(self.train_label)
         self.len = len(self.data)
     def __getitem__(self, index):
         return self.data[index],self.train_label[index]
@@ -50,17 +50,17 @@ class Model(nn.Module):
     def __init__(self,input_size,hidden_size,output_size,n_layer):
         super(Model,self).__init__()
         self.embed = nn.Embedding(len(df),hidden_size,padding_idx=1)
-        self.gru = nn.GRU(hidden_size,hidden_size,n_layer,dropout=0.2)
+        self.gru = nn.GRU(hidden_size,hidden_size,n_layer,dropout=0.2,bidirectional=False)
         self.fc1 = nn.Linear(hidden_size,hidden_size*2)
         self.out =  nn.Linear(hidden_size*2,output_size)
     def forward(self,x):
         # print(x)
+        # x=x.t()
         x = self.embed(x)
         self.gru.flatten_parameters()
-        x= self.gru(x)
-        print(x)
-
-        x= self.fc1(x)
+        x, _= self.gru(x)
+        x= self.fc1(x[:,-1])
+        x = F.relu(x)
         out = self.out(x)
         return out
 
@@ -81,7 +81,6 @@ def train():
             # print('opt')
             optimizer.zero_grad()
             output = model(data)
-
             loss= criterion(output,target)
             bat_loss += loss.data
             # print(epoch,loss.data)

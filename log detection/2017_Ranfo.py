@@ -13,7 +13,8 @@ anomal_y = np.zeros((anomal_x.shape[0])) + 1
 train_data = np.concatenate([train_x,anomal_x],axis=0)
 
 train_label = np.concatenate([train_y,anomal_y]).reshape(-1,1)
-
+# np.save('pnn/data/label.npy',train_label)
+# quit()
 train_x,test_x,train_y , test_y = train_test_split(train_data,train_label,test_size=0.4,shuffle=True,random_state=666)
 
 rnd_clf = RandomForestClassifier(n_estimators=1000,max_leaf_nodes=400,max_depth=50,random_state=666,n_jobs=-1)

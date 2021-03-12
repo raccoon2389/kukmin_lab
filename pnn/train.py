@@ -4,11 +4,13 @@ import getopt
 import torch
 import torch.optim as optim
 import torch.nn.functional as F
-
+from torch.autograd.variable import Variable
 from tqdm import tqdm
 
-import utils
-import models
+import utils as utils
+import models as models
+import prepro as prepro
+
 
 USE_CUDA = torch.cuda.is_available()
 DEVICE = torch.device('cuda' if USE_CUDA else "cpu")
@@ -42,31 +44,31 @@ def train(train_csv_path, model_path, batch_size, epochs, input_length, window_s
     train_model(model, epochs, train_loader, optimizer)
     torch.save(model.state_dict(), model_path)
 
-def main(argv):
+def main():
     train_csv_path = None
-    model_path = 'model.dat'
+    model_path = 'pnn/data/model.dat'
     batch_size = 128
     epochs = 10
-    input_length = 1600
+    input_length = 1800
     window_size = 5
-    optlist, args = getopt.getopt(argv[1:], '', ['help', 'train=', 'model=', 'batch_size=', 'epochs=', 'input_length=', 'window_size='])
-    for opt, arg in optlist:
-        if opt == '--help':
-            utils.train_help()
-            sys.exit(0)
-        elif opt == '--train':
-            train_csv_path = arg
-        elif opt == '--model':
-            model_path = arg
-        elif opt == '--batch_size':
-            batch_size = int(arg)
-        elif opt == '--epochs':
-            epochs = int(arg)
-        elif opt == '--input_length':
-            input_length = int(arg)
-        elif opt == '--window_size':
-            window_size = int(arg)
-    train(train_csv_path, model_path, batch_size, epochs, input_length, window_size)
+    # optlist, args = getopt.getopt(argv[1:], '', ['help', 'train=', 'model=', 'batch_size=', 'epochs=', 'input_length=', 'window_size='])
+    # for opt, arg in optlist:
+    #     if opt == '--help':
+    #         utils.train_help()
+    #         sys.exit(0)
+    #     elif opt == '--train':
+    #         train_csv_path = arg
+    #     elif opt == '--model':
+    #         model_path = arg
+    #     elif opt == '--batch_size':
+    #         batch_size = int(arg)
+    #     elif opt == '--epochs':
+    #         epochs = int(arg)
+    #     elif opt == '--input_length':
+    #         input_length = int(arg)
+    #     elif opt == '--window_size':
+    #         window_size = int(arg)
+    train('pnn/data/labeled.csv', model_path, batch_size, epochs, input_length, window_size)
 
 if __name__ == '__main__':
-    main(sys.argv)
+    main()

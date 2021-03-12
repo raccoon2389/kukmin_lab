@@ -12,7 +12,7 @@ import pandas as pd
 import utils
 
 def vectorize_payload(payload):
-    payload = [ int(payload[i:i+2], 16) + 1 for i in range(0, len(payload), 2) ]
+    payload = [ int(payload[i:i+2], 16) + 1 for i in range(len(payload)) ]
     payload.extend([0] * (1600 - len(payload)))
     return torch.tensor(payload, dtype=torch.long)
 
@@ -49,7 +49,7 @@ def main(argv):
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
     df = pd.read_csv(csv_path, header=None)
-
+    
     fn_list = df[0].values
     target_dir_list = [save_dir] * len(fn_list)
 
